@@ -1,5 +1,5 @@
 from .functions import move
-
+import math
 
 class node:
     # all possible move direction
@@ -12,7 +12,7 @@ class node:
         self.blue_node = []
         self.red_node = []
         self.table = table
-        self.lest_manhattan_distant = 1000
+        self.lest_straight_distant = 1000
         # number of cost used to reach this step
         self.cost = cost
         self.fx = 0
@@ -46,7 +46,6 @@ class node:
     # check if the goal is reached
     def goal(self):
         if len(self.blue_node) == 0:
-
             return True
         else:
             return False
@@ -54,22 +53,22 @@ class node:
     # calculate the f(X) = g(X) + h(X)
     def calculate_cost(self):
         # calculate the h(X) use Manhattan distance
-        self.least_manhattan_distant()
+        self.least_straight_distant()
         # calculate the f(X)
-        self.fx = self.cost + self.lest_manhattan_distant
+        self.fx = self.cost + self.lest_straight_distant
 
-    # calculate the least manhattan distance between red token and blue token
-    def least_manhattan_distant(self):
+    # calculate the least straight distance between red token and blue token
+    def least_straight_distant(self):
         current_distance = 0
         for red in self.red_node:
             for blue in self.blue_node:
                 # as the position 7 is connected to 0, so we need to ensure the distance is the least
                 # I create new position by adding 7 and reduce 7 to the position to let the distance be the least
-                current_distance = min(abs(blue[0]+7-red[0]), abs(blue[0]-red[0]), abs(blue[0]-7-red[0])) + \
-                                   min(abs(blue[1]+7-red[1]), abs(blue[1]-red[1]), abs(blue[1]-7-red[1]))
+                current_distance = math.sqrt(min(abs(blue[0]+7-red[0]), abs(blue[0]-red[0]), abs(blue[0]-7-red[0]))**2 + \
+                                   min(abs(blue[1]+7-red[1]), abs(blue[1]-red[1]), abs(blue[1]-7-red[1]))**2)/10
 
-            if current_distance < self.lest_manhattan_distant:
-                self.lest_manhattan_distant = current_distance
+            if current_distance < self.lest_straight_distant:
+                self.lest_straight_distant = current_distance
 
     # expand the node and create children by using detect all the red token's move cost to other blue token
     # for every red token, enter one possible movement and calculate the cost and create a node.
