@@ -2,6 +2,8 @@
 # Project Part A: Single Player Infexion
 
 import heapq
+import time
+
 from .node import node
 from .functions import *
 from .utils import render_board
@@ -20,6 +22,8 @@ def search(input: dict[tuple, tuple]) -> list[tuple]:
     input = state of the board
     goal -> no blue cells. working by a function.
     """
+    # record time of search
+    start = time.time()
     # create a priority queue
     priority_queue = []
     # create the first node
@@ -30,14 +34,9 @@ def search(input: dict[tuple, tuple]) -> list[tuple]:
     current_node = first_node
     print(render_board(input, ansi=True))
     numbers = 0
-    n = 1
     while True:
         # check if the priority queue is empty
         # if empty, return nothing
-        if(numbers == 1000*n):
-            print(numbers)
-            n += 1
-            print(render_board(input, ansi=True))
         numbers += 1
         if len(priority_queue) == 0:
             print(render_board(input, ansi=True))
@@ -50,6 +49,10 @@ def search(input: dict[tuple, tuple]) -> list[tuple]:
                 move(action, first_node.get_table())
                 print(render_board(first_node.get_table(), ansi=True))
             print(numbers)
+            # record time of search
+            end = time.time()
+            during = end - start
+            print("time: ", during)
             return current_node.get_action()
         # expand the node
         current_node.expand()

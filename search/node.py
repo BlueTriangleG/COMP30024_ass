@@ -13,6 +13,7 @@ class node:
         self.red_node = []
         self.table = table
         self.lest_straight_distant = 1000
+        self.least_manhattan_distant = 1000
         # number of cost used to reach this step
         self.cost = cost
         self.fx = 0
@@ -57,25 +58,63 @@ class node:
         # calculate the number of blue token h(x)1
         blue_number = self.blue_token_number()
         # calculate the f(X)
-        self.fx = self.cost + self.lest_straight_distant + blue_number
+        self.fx = self.cost + self.least_manhattan_distant + blue_number
+    # calculate the h(x)
+    #def heuristic(self):
+
 
     # calculate the least straight distance between red token and blue token
     def least_straight_distant(self):
+        blue_manhattan_distance = 1000
         current_distance = 0
-        spread_distance = 0
-        for red in self.red_node:
-            spread_distance = self.table[red][1]
-            for blue in self.blue_node:
-                # as the position 7 is connected to 0, so we need to ensure the distance is the least
-                # I create new position by adding 7 and reduce 7 to the position to let the distance be the least
-                current_distance = math.sqrt(min(abs(blue[0]+7-red[0]), abs(blue[0]-red[0]), abs(blue[0]-7-red[0]))**2 + \
-                                   min(abs(blue[1]+7-red[1]), abs(blue[1]-red[1]), abs(blue[1]-7-red[1]))**2)/spread_distance
-            if current_distance < self.lest_straight_distant:
-                self.lest_straight_distant = current_distance
+        current_distance_blue = 1000
+        current_manhattan_distance = 1000
+        # get the least distance between red token and blue token
+        if len(self.blue_node) != 0:
+            for red in self.red_node:
+                spread_distance = self.table[red][1]
+                for blue in self.blue_node:
+                    # as the position 7 is connected to 0, so we need to ensure the distance is the least
+                    # I create new position by adding 7 and reduce 7 to the position to let the distance be the least
+                    #blue_distance = math.sqrt(min(abs(blue[0]+7-red[0]), abs(blue[0]-red[0]), abs(blue[0]-7-red[0]))**2 + \
+                    #                   min(abs(blue[1]+7-red[1]), abs(blue[1]-red[1]), abs(blue[1]-7-red[1]))**2)/spread_distance
+                    blue_manhattan_distance = self.least_manhattan_distant_calculate(red, blue)/spread_distance
+                    #if blue_distance < current_manhattan_distance:
+                    #    current_distance_blue = blue_distance
+                    if blue_manhattan_distance < current_distance_blue:
+                        current_distance_blue = blue_manhattan_distance
+                # get the least distance between red token and blue token
+                #if current_distance_blue < self.lest_straight_distant:
+                #    self.lest_straight_distant = current_distance_blue
+                if blue_manhattan_distance< self.least_manhattan_distant:
+                    self.least_manhattan_distant = blue_manhattan_distance
+        else:
+            self.lest_straight_distant = 0
+            self.least_manhattan_distant = 0
+
+    # calculate the least manhattan distance between red token and blue token
+    def axial_to_cube(self,r, q):
+        x = r
+        z = q
+        y = -x - z
+        return x, y, z
+
+    def cube_distance(self,a, b):
+        ax, ay, az = a
+        bx, by, bz = b
+        return (abs(ax - bx) + abs(ay - by) + abs(az - bz)) // 2
+    def least_manhattan_distant_calculate(self,red, blue):
+        cube_coord1 = self.axial_to_cube(red[0], red[1])
+        cube_coord2 = self.axial_to_cube(blue[0], blue[1])
+        return self.cube_distance(cube_coord1, cube_coord2)
+
 
     # calculate the number of blue token
     def blue_token_number(self):
-        return len(self.blue_node)
+        blue_number = len(self.blue_node)
+        if blue_number == 0:
+            return 1
+        return blue_number
 
     # expand the node and create children by using detect all the red token's move cost to other blue token
     # for every red token, enter one possible movement and calculate the cost and create a node.
