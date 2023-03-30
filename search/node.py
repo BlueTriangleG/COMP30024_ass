@@ -52,10 +52,12 @@ class node:
 
     # calculate the f(X) = g(X) + h(X)
     def calculate_cost(self):
-        # calculate the h(X) use Manhattan distance
+        # calculate the h(X) use straight distance h(x)2
         self.least_straight_distant()
+        # calculate the number of blue token h(x)1
+        blue_number = self.blue_token_number()
         # calculate the f(X)
-        self.fx = self.cost + self.lest_straight_distant
+        self.fx = self.cost + self.lest_straight_distant + blue_number
 
     # calculate the least straight distance between red token and blue token
     def least_straight_distant(self):
@@ -68,9 +70,12 @@ class node:
                 # I create new position by adding 7 and reduce 7 to the position to let the distance be the least
                 current_distance = math.sqrt(min(abs(blue[0]+7-red[0]), abs(blue[0]-red[0]), abs(blue[0]-7-red[0]))**2 + \
                                    min(abs(blue[1]+7-red[1]), abs(blue[1]-red[1]), abs(blue[1]-7-red[1]))**2)/spread_distance
-            self.lest_straight_distant += current_distance
-            #if current_distance < self.lest_straight_distant:
-               # self.lest_straight_distant = current_distance
+            if current_distance < self.lest_straight_distant:
+                self.lest_straight_distant = current_distance
+
+    # calculate the number of blue token
+    def blue_token_number(self):
+        return len(self.blue_node)
 
     # expand the node and create children by using detect all the red token's move cost to other blue token
     # for every red token, enter one possible movement and calculate the cost and create a node.
