@@ -60,15 +60,17 @@ class node:
     # calculate the least straight distance between red token and blue token
     def least_straight_distant(self):
         current_distance = 0
+        spread_distance = 0
         for red in self.red_node:
+            spread_distance = self.table[red][1]
             for blue in self.blue_node:
                 # as the position 7 is connected to 0, so we need to ensure the distance is the least
                 # I create new position by adding 7 and reduce 7 to the position to let the distance be the least
                 current_distance = math.sqrt(min(abs(blue[0]+7-red[0]), abs(blue[0]-red[0]), abs(blue[0]-7-red[0]))**2 + \
-                                   min(abs(blue[1]+7-red[1]), abs(blue[1]-red[1]), abs(blue[1]-7-red[1]))**2)/10
-
-            if current_distance < self.lest_straight_distant:
-                self.lest_straight_distant = current_distance
+                                   min(abs(blue[1]+7-red[1]), abs(blue[1]-red[1]), abs(blue[1]-7-red[1]))**2)/spread_distance
+            self.lest_straight_distant += current_distance
+            #if current_distance < self.lest_straight_distant:
+               # self.lest_straight_distant = current_distance
 
     # expand the node and create children by using detect all the red token's move cost to other blue token
     # for every red token, enter one possible movement and calculate the cost and create a node.

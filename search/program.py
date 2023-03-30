@@ -28,10 +28,16 @@ def search(input: dict[tuple, tuple]) -> list[tuple]:
     heapq.heappush(priority_queue, first_node)
     # start search
     current_node = first_node
+    print(render_board(input, ansi=True))
     numbers = 0
+    n = 1
+    print(numbers)
     while True:
         # check if the priority queue is empty
         # if empty, return nothing
+        if(numbers == 1000*n):
+            print(numbers)
+            n += 1
         numbers += 1
         if len(priority_queue) == 0:
             print(render_board(input, ansi=True))
